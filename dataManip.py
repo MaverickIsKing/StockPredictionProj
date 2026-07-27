@@ -5,7 +5,7 @@ from sklearn.metrics import root_mean_squared_error
 import features
 import os
 
-directory = "D:/Download/StockPredictionProj-main/StockPredictionProj-main"
+directory = os.getcwd()
 file_name = "NVDAGOOGTSLAMULITE2026-07-14-19-55-00.csv"
 df = pd.read_csv(os.path.join(directory,file_name))
 df_lite = df.loc[df['Ticker']=='LITE']
