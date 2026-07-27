@@ -16,14 +16,14 @@ class LSTMModel(nn.Module):
 
     def forward(self, x):
         if self.norm == True:
-            std, mean = torch.std_mean(x, dim=1)
-            x = (x-mean.unsqueeze(1))/std.unsqueeze(1)
+            # std, mean = torch.std_mean(x, dim=1)
+            # x = (x-mean.unsqueeze(1))/std.unsqueeze(1)
             h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim, device=device)
             c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim, device=device)
             
             out, (hn, cn) = self.lstm(x, (h0.detach(), c0.detach()))
             out = self.fc(out[:,-1,:])
-            out = (out*std)+mean
+            # out = (out*std)+mean
             return out
         
         h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim, device=device)
