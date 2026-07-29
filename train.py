@@ -46,14 +46,15 @@ Y_test = torch.from_numpy(data[train_size:, -1, :]).type(torch.Tensor).to(device
 Y_meanstd_test = torch.from_numpy(meanstd[train_size:, -1, :]).type(torch.Tensor)
 model = LSTMModel(input_dim=5, hidden_dim=128, num_layers=4, output_dim=5, dropout=0.2).to(device)
 criterion = nn.MSELoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+optimizer = torch.optim.AdamW(model.parameters(), lr=0.001, weight_decay=0.05)
 
-num_epochs = 100
+num_epochs = 1000
 
+print(Y_train.shape)
 for i in range(num_epochs):
     Y_train_pred  = model(X_train)
-
-    loss = criterion(Y_train_pred, Y_train)
+    
+    loss = criterion(Y_train_pred, Y_train) + (0.5)*torch.norm(Y_train_pred[:,3] - Y_train[:,3])
 
     if i % 25 == 0:
         print(i, loss.item())
@@ -66,13 +67,13 @@ model.eval()
 
 torch.save(model.state_dict(), os.path.join(directory,'MyLSTMforStockPred.pth'))
 
-model2 = LSTMModel(input_dim=5, hidden_dim=128, num_layers=4, output_dim=5, dropout=0.2)
+# model2 = LSTMModel(input_dim=5, hidden_dim=128, num_layers=4, output_dim=5, dropout=0.2)
 
-model2.load_state_dict(torch.load(os.path.join(directory,'MyLSTMforStockPred.pth')))
-model2.eval()
+# model2.load_state_dict(torch.load(os.path.join(directory,'MyLSTMforStockPred.pth')))
+# model2.eval()
 
-Y_train_pred = model2(X_train)
-Y_test_pred = model2(X_test)
+Y_train_pred = model(X_train)
+Y_test_pred = model(X_test)
 
 Y_train_pred = Y_train_pred.detach().cpu().numpy()
 Y_train = Y_train.detach().cpu().numpy()
@@ -100,8 +101,8 @@ fig = plt.figure(figsize=(12,10))
 gs = fig.add_gridspec(4,1)
 
 ax1 = fig.add_subplot(gs[:3, 0])
-ax1.plot(df.iloc[int(-len(Y_test)*0.1):].index, Y_test[int(-len(Y_test)*0.1):,3], color = 'blue', label='Actual Price')
-ax1.plot(df.iloc[int(-len(Y_test)*0.1):].index, Y_test_pred[int(-len(Y_test)*0.1):,3], color = 'green', label='Predicted Price')
+ax1.plot(df.iloc[int(-len(Y_test)):].index, Y_test[int(-len(Y_test)):,3], color = 'blue', label='Actual Price')
+ax1.plot(df.iloc[int(-len(Y_test)):].index, Y_test_pred[int(-len(Y_test)):,3], color = 'green', label='Predicted Price')
 ax1.legend()
 plt.title(f"Stock Price Prediction")
 plt.xlabel('Date')
@@ -109,7 +110,7 @@ plt.ylabel('Price')
 
 ax2 = fig.add_subplot(gs[3, 0])
 ax2.axhline(test_rmse, color='blue', linestyle='--', label='RMSE')
-ax2.plot(df[int(-len(Y_test)*0.1):].index, abs(Y_test[int(-len(Y_test)*0.1):,3] - Y_test_pred[int(-len(Y_test)*0.1):,3]), 'r', label='Prediction Error')
+ax2.plot(df[int(-len(Y_test)):].index, abs(Y_test[int(-len(Y_test)):,3] - Y_test_pred[int(-len(Y_test)):,3]), 'r', label='Prediction Error')
 ax2.legend()
 plt.title('Prediction Error')
 plt.xlabel('Date')
