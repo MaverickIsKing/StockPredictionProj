@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import root_mean_squared_error
 import features
 import os
+import torch
 
 directory = os.getcwd()
 file_name = "NVDAGOOGTSLAMULITE2026-07-14-19-55-00.csv"
@@ -44,3 +45,15 @@ def prepareDataForLSTM(df, label, memLength):
 data, meanstd = prepareDataForLSTM(df_lite, ['Open','High','Low','Adj Close','Volume'], 30)
 
 print(meanstd)
+
+vec = torch.tensor([[1,2,-3],[4,5,6]],dtype=float,requires_grad=True)
+
+print(vec[:,2])
+
+y = torch.norm(vec[:,2],2)
+
+print(y)
+
+y.backward()
+
+print(vec.grad)

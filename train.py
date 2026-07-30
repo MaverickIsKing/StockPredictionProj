@@ -54,7 +54,7 @@ print(Y_train.shape)
 for i in range(num_epochs):
     Y_train_pred  = model(X_train)
     
-    loss = criterion(Y_train_pred, Y_train) + (0.5)*torch.norm(Y_train_pred[:,3] - Y_train[:,3])
+    loss = criterion(Y_train_pred, Y_train) + (0.5)*torch.norm(Y_train_pred[:,3] - Y_train[:,3],3)
 
     if i % 25 == 0:
         print(i, loss.item())
