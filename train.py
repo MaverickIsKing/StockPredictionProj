@@ -6,6 +6,7 @@ from sklearn.metrics import root_mean_squared_error
 from sklearn.preprocessing import StandardScaler
 import features
 import os
+import plotly
 
 
 scaler = StandardScaler()
