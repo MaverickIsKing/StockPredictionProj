@@ -1,0 +1,27 @@
+[project]
+name = "stockpredictionproj"
+version = "0.1.0"
+description = "Simple stock prediction project based on LSTM"
+readme = "README.md"
+authors = [
+    { name = "MaverickIsKing", email = "mzhang73@outlook.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "matplotlib",
+    "numpy",
+    "pandas",
+    "scikit-learn",
+    "seaborn",
+    "torch",
+    "yfinance",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.2,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv]
+# This repository consists of top-level runnable scripts rather than an
+# installable `src/stockpredictionproj` package.
+package = false
